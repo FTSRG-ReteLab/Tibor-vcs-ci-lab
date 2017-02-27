@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -13,6 +14,7 @@ import org.junit.Test;
 import hu.bme.mit.train.interfaces.TrainController;
 import hu.bme.mit.train.interfaces.TrainSensor;
 import hu.bme.mit.train.interfaces.TrainUser;
+import hu.bme.mit.train.system.Tachograph;
 import hu.bme.mit.train.system.TrainSystem;
 
 public class TrainSystemTest {
@@ -20,6 +22,7 @@ public class TrainSystemTest {
 	TrainController controller;
 	TrainSensor sensor;
 	TrainUser user;
+	Tachograph tachograph;
 	
 	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 	
@@ -30,6 +33,7 @@ public class TrainSystemTest {
 		controller = system.getController();
 		sensor = system.getSensor();
 		user = system.getUser();
+		tachograph = system.getTachograph();
 
 		sensor.overrideSpeedLimit(50);
 		
@@ -82,6 +86,16 @@ public class TrainSystemTest {
 		user.overrideJoystickPosition(10);
 		controller.followSpeed();
 		Assert.assertEquals(10, controller.getReferenceSpeed());
+	}
+	
+	@Test
+	public void test5() {
+		user.overrideJoystickPosition(4);
+		controller.followSpeed();
+		tachograph.addData(new Date(), controller.getJoystickPosition(), controller.getReferenceSpeed());
+		user.overrideJoystickPosition(-5);
+		controller.followSpeed();
+		Assert.assertEquals(0, controller.getReferenceSpeed());
 	}
 	
 	@After
