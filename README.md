@@ -7,3 +7,4 @@ Sample application for the version control systems and continuous integration la
 * travis
 
 [GitHub](http://www.github.com)
+MERGE CONFLICT!!!
